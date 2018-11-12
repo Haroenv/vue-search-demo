@@ -1,28 +1,66 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <!-- eslint-disable -->
+  <ais-instant-search index-name="instant_search" :search-client="searchClient">
+    <button @click="toggleAlgolia">
+      {{ algolia ? 'algolia' : 'static' }}
+    </button>
+    <ais-configure :hitsPerPage="20" />
+    <div style="display: flex">
+      <div style="flex: 2">
+        <ais-refinement-list attribute="brand" />
+      </div>
+      <div style="flex: 4">
+        <ais-search-box />
+        <ais-hits>
+          <template slot-scope="{ item }" slot="item">
+            <h2>
+              <ais-highlight :hit="item" attribute="name" v-if="item._highlightResult" />
+              <span v-else>{{item.name}}</span>
+            </h2>
+            <p>
+              <ais-highlight :hit="item" attribute="description" v-if="item._highlightResult" />
+              <span v-else>{{item.description}}</span>
+            </p>
+          </template>
+        </ais-hits>
+        <ais-pagination />
+      </div>
+    </div>
+  </ais-instant-search>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import algoliasearch from 'algoliasearch';
+import searchClient from './searchClient';
 
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
+  data() {
+    return {
+      algolia: true,
+    };
+  },
+  computed: {
+    searchClient() {
+      if (this.algolia) {
+        return algoliasearch('latency', '3d9875e51fbd20c7754e65422f7ce5e1');
+      }
+      return searchClient;
+    },
+  },
+  methods: {
+    toggleAlgolia() {
+      this.algolia = !this.algolia;
+    },
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.ais-Hits-item {
+  width: unset !important;
 }
 </style>

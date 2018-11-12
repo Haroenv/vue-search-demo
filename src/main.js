@@ -1,8 +1,12 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import App from './App.vue';
+import VueInstantSearch from 'vue-instantsearch';
+import 'instantsearch.css/themes/algolia-min.css';
 
-Vue.config.productionTip = false
+Vue.use(VueInstantSearch);
+
+Vue.config.productionTip = false;
 
 new Vue({
   render: h => h(App),
-}).$mount('#app')
+}).$mount('#app');
